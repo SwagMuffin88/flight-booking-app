@@ -1,0 +1,11 @@
+openapi: 3.0.3
+info:
+  title: FlightBuddy API
+  description: 
+    Flight booking API codenamed "FlightBuddy" is a simulated system where users can view, filter and book flights.
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080/'
+
+paths: 
+  
