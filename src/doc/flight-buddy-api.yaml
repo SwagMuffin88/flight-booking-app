@@ -1,11 +1,125 @@
 openapi: 3.0.3
 info:
-  title: FlightBuddy API
+  title: FlightBuddy application
   description: 
-    Flight booking API codenamed "FlightBuddy" is a simulated system where users can view, filter and book flights.
+    Flight booking application codenamed "FlightBuddy" is a simulated system where users can view, 
+    filter and book flights.
   version: 1.0.0
 servers:
   - url: 'http://localhost:8080/'
+    description: Local development server
 
-paths: 
-  
+# Paths list generated from controller classes using ChatGPT
+paths:
+  /flights/all:
+    get:
+      summary: Get all flights
+      description: Retrieves a list of all available flights.
+      operationId: getAllFlights
+      tags:
+        - Flights
+      responses:
+        "200":
+          description: Successful response with a list of flights.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FlightDTO"
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+## Components list generated using ChatGPT
+components:
+  schemas:
+    Flight:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        origin:
+          $ref: '#/components/schemas/Location'
+        destination:
+          $ref: '#/components/schemas/Location'
+        plane:
+          $ref: '#/components/schemas/Plane'
+        departureTime:
+          type: string
+          format: date-time
+          example: "2025-04-15 10:30"
+     
+    Seat:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 101
+        isAvailable:
+          type: boolean
+          example: true
+        placement:
+          $ref: '#/components/schemas/Placement'
+        plane:
+          $ref: '#/components/schemas/Plane'
+        number:
+          type: string
+          example: "A10"
+          
+    Plane:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: "Boeing 737"
+        numRows:
+          type: integer
+          example: 20
+        numColumns:
+          type: integer
+          example: 6
+        flights:
+          type: array
+          items:
+            $ref: '#/components/schemas/Flight'
+        seats:
+          type: array
+          items:
+            $ref: '#/components/schemas/Seat'
+
+    Location:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 101
+        airportNameShort:
+          type: string
+          example: "JFK"
+        country:
+          type: string
+          example: "United States"
+        city:
+          type: string
+          example: "New York"
+          
+    Placement:
+      type: string
+      enum:
+        - WINDOW
+        - AISLE
+      example: "WINDOW"
+      
+    

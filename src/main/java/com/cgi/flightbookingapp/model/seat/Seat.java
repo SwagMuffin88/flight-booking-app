@@ -6,13 +6,16 @@ import lombok.*;
 import java.util.Objects;
 
 @Entity @Getter @Setter
-@RequiredArgsConstructor @NoArgsConstructor
+@RequiredArgsConstructor
 public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String number;
+
     private boolean isAvailable;
+    
     private Placement placement;
     
     @ManyToOne
