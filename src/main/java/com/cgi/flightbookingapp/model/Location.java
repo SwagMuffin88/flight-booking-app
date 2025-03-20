@@ -1,4 +1,4 @@
-package com.cgi.flightbookingapp.model.flight;
+package com.cgi.flightbookingapp.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

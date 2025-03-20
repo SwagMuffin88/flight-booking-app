@@ -1,6 +1,6 @@
 package com.cgi.flightbookingapp.DTO.locationDTO;
 
-import com.cgi.flightbookingapp.model.flight.Location;
+import com.cgi.flightbookingapp.model.Location;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

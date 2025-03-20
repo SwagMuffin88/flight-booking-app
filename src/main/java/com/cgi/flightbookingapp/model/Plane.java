@@ -1,6 +1,5 @@
 package com.cgi.flightbookingapp.model;
 
-import com.cgi.flightbookingapp.model.flight.Flight;
 import com.cgi.flightbookingapp.model.seat.Seat;
 import jakarta.persistence.*;
 import lombok.*;

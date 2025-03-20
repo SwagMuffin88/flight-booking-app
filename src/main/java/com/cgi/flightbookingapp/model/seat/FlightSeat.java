@@ -1,6 +1,6 @@
 package com.cgi.flightbookingapp.model.seat;
 
-import com.cgi.flightbookingapp.model.flight.Flight;
+import com.cgi.flightbookingapp.model.Flight;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

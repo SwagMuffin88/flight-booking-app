@@ -1,6 +1,5 @@
-package com.cgi.flightbookingapp.model.flight;
+package com.cgi.flightbookingapp.model;
 
-import com.cgi.flightbookingapp.model.Plane;
 import com.cgi.flightbookingapp.model.seat.FlightSeat;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;

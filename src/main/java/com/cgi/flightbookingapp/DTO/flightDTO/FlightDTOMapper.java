@@ -1,8 +1,7 @@
 package com.cgi.flightbookingapp.DTO.flightDTO;
 
 import com.cgi.flightbookingapp.DTO.locationDTO.LocationDTOMapper;
-import com.cgi.flightbookingapp.DTO.planeDTO.PlaneDTOMapper;
-import com.cgi.flightbookingapp.model.flight.Flight;
+import com.cgi.flightbookingapp.model.Flight;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
