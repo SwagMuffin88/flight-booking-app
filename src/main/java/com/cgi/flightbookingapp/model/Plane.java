@@ -23,7 +23,7 @@ public class Plane {
     @OneToMany(mappedBy = "plane", cascade = CascadeType.ALL)
     private List<Flight> flights;
 
-    @OneToMany(mappedBy = "plane", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "plane", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Seat> seats;
 
     @Override

@@ -21,4 +21,11 @@ public class FlightService {
                 .collect(Collectors.toList());
     }
     
+    //get flight by id -> get as DTO
+    
+    // get all flights by destination
+    // get all flights within date range
+    // get flights ordered by price
+    // get flights ordered by date -> earliest first
+    
 }

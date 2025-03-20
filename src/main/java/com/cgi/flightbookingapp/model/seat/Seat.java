@@ -7,18 +7,18 @@ import java.util.Objects;
 
 @Entity @Getter @Setter
 @RequiredArgsConstructor
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String number;
-
-    private boolean isAvailable;
     
+    @Enumerated(EnumType.STRING)
     private Placement placement;
     
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "plane_id")
     private Plane plane;
 
