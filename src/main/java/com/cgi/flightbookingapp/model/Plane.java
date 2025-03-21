@@ -4,6 +4,7 @@ import com.cgi.flightbookingapp.model.seat.Seat;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,7 +23,7 @@ public class Plane {
     @OneToMany(mappedBy = "plane", cascade = CascadeType.ALL)
     private List<Flight> flights;
 
-    @OneToMany(mappedBy = "plane", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "plane", cascade = CascadeType.ALL)
     private List<Seat> seats;
 
     @Override

@@ -1,5 +1,6 @@
 package com.cgi.flightbookingapp.config;
 
+import com.cgi.flightbookingapp.exception.ResourceNotFoundException;
 import com.cgi.flightbookingapp.model.Plane;
 import com.cgi.flightbookingapp.model.Flight;
 import com.cgi.flightbookingapp.model.Location;
@@ -13,20 +14,22 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cgi.flightbookingapp.model.seat.Placement.*;
 
 /*  The purpose of this class is to initialize database with pre-made dataset and thus eliminate the need
-* to manually create data for testing purposes from scratch. */
+* to manually create data for testing purposes from scratch. Randomizing seat availability for each flight 
+* is also performed in this class.*/
 
 // Based on Studyeasy article: https://studyeasy.org/course-articles/spring-boot-articles/s03l04-adding-seed-data-in-the-database/
 
 @Component @RequiredArgsConstructor
 public class DataSeeder implements CommandLineRunner {
-    
-//    private final PlaneService planeService;
     private final PlaneRepository planeRepository;
     private final LocationRepository locationRepository;
     private final SeatRepository seatRepository;
@@ -41,35 +44,49 @@ public class DataSeeder implements CommandLineRunner {
         List<Flight> flightList = flightRepository.findAll(); 
         
         if (planeList.size() == 0) {
-            createAndAddPlanes();
+            planeList = createAndAddPlanes();
         }
         
         if (locationList.size() == 0) {
-            createAndAddLocations();
+            locationList = createAndAddLocations();
         }
+        
+        if (flightList.size() == 0) {
+            flightList = planeList.stream()
+                            .flatMap(plane -> {
+                                try {
+                                    return createFlightsForPlane(plane)
+                                            .stream();
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
+                            })
+                            .toList();
+            
+        }
+//        System.out.println(planeList.get(0).getFlights().size());
         
     }
 
     // Creates new instances of plane objects and adds them to database.  
-    // Uses repo.saveAll() method to enable adding more instances if necessary.
-    private void createAndAddPlanes() {
+    private List<Plane> createAndAddPlanes() {
         Plane plane = new Plane();
         plane.setName("Airbus 1");
         plane.setNumRows(20);
         plane.setNumColumns(4);
         
-        List<Seat> newSeats = new ArrayList<>(
-                generateSeatsForPlane(plane)
-        );
-
+        plane = planeRepository.save(plane);
+        
+        List<Seat> newSeats = generateSeatsForPlane(plane);
         plane.setSeats(newSeats);
+
         // todo create flights for plane
 
-        planeRepository.saveAll(List.of(plane));
+        return planeRepository.saveAll(List.of(plane));
     }
 
     // Creates new instances of location entities and adds them to database.
-    private void createAndAddLocations() {
+    private List<Location> createAndAddLocations() {
         Location tln = new Location();
         tln.setCity("Tallinn");
         tln.setCountry("Estonia");
@@ -87,7 +104,7 @@ public class DataSeeder implements CommandLineRunner {
 
         // todo add 1-2 more locations
         
-        locationRepository.saveAll(List.of(tln, dub, lis));
+        return locationRepository.saveAll(List.of(tln, dub, lis));
     }
     
     // Generates seat layout for individual plane.
@@ -119,40 +136,73 @@ public class DataSeeder implements CommandLineRunner {
         
         return seatRepository.saveAll(generatedSeats);
     }
-
-    // todo create flights and copy plane seats to each flight
     
-    private List<Location> getDestinationsFromDb() {
-        return locationRepository.findAll()
-                        .stream()
-                        .filter(l -> !l.getAirportNameShort().equals("TLN"))
-                        .collect(Collectors.toList());
-    } 
-    
-    // Create new flight, copy seat layout from associated plane
-    private List<Flight> createFlightsForPlane(Plane plane) {
+    // Creates new flights, adds them to plane.
+    private List<Flight> createFlightsForPlane(Plane plane) throws ResourceNotFoundException {
         List<Flight> flights = new ArrayList<>();
+        Random random = new Random();
+        List<Location> allLocations = new ArrayList<>(getLocationsFromDb());
         
-        // add routes
-        // todo create list of destinations to choose randomly from
+        Location origin = getOriginLocation("TLN");
+        List<Location> destinations = getDestinations(allLocations, origin);
+        
+        // Create 10 flights with randomized locations and dates
+        generateGivenNrOfFlights(plane, flights, random, origin, destinations, 10);
+        
+        plane.setFlights(flights);
+        planeRepository.save(plane);
 
-        // Initial logic created using ChatGPT
-//        for (String[] route : routes) { // todo use different collection type
-//            Flight flight = new Flight();
-////            flight.setOrigin(route[0]);  todo set as "TLN"
-////            flight.setDestination(route[1]); todo use list
-//            flight.setDepartureTime(LocalDateTime.now().plusDays(new Random().nextInt(30)));
-//            flight.setPlane(plane);
-//            flight = flightRepository.save(flight); // Save flight first
-//
-//            // Generate seats for this flight based on the plane layout
-//            List<FlightSeat> flightSeats = getSeatsFromPlaneAndAssignToFlight(flight, plane);
-//            flight.setFlightSeats(flightSeats);
-//
-//            flights.add(flight);
-//        }
+        return flightRepository.saveAll(flights);
+    }
+
+    // Extracted from previous method.
+    private void generateGivenNrOfFlights(
+            Plane plane, List<Flight> flights, Random random, 
+            Location origin, List<Location> destinations, int n) {
         
-        return null;
+        // Initial departure time
+        LocalDateTime departureTime = LocalDateTime.now().plusDays(1);
+
+        for (int i = 0; i <= n; i++) {
+            Flight flight = new Flight();
+
+            flight.setOrigin(origin);
+            flight.setDestination(
+                    destinations.get(random.nextInt(0, destinations.size()))
+            );
+            flight.setDepartureTime(departureTime);
+            flight.setPlane(plane);
+            
+            // Generate seats for individual flight based on the plane layout
+            List<FlightSeat> flightSeats = getSeatsFromPlaneAndAssignToFlight(flight, plane);
+            flight.setFlightSeats(flightSeats);
+            
+            flights.add(flight);
+
+            // Calculate next departure time
+            int extraHours = random.nextInt(6);
+            departureTime = departureTime.plusHours(24 + extraHours);
+        }
+    }
+
+    private List<Location> getLocationsFromDb() {
+        return locationRepository.findAll();
+    }
+    
+    //Returns origin location based on given airport code.
+    private Location getOriginLocation(String originCode) throws ResourceNotFoundException {
+        return locationRepository.findByAirportNameShort(originCode)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Origin location not found"));
+    }
+    
+    // Filters all locations, excluding the origin location.
+    private List<Location> getDestinations(List<Location> allLocations, Location origin) {
+        return allLocations.stream()
+                .filter(l -> !l.getId()
+                                .equals(origin.getId()
+                                ))
+                .collect(Collectors.toList());
     }
     
     // Copies seat layout from specific plane to associated flight and assigns random availability
@@ -166,6 +216,10 @@ public class DataSeeder implements CommandLineRunner {
 
         for (Seat planeSeat : planeSeats) {
             FlightSeat flightSeat = new FlightSeat();
+            
+            flightSeat.setNumber(planeSeat.getNumber());
+            flightSeat.setPlacement(planeSeat.getPlacement());
+            flightSeat.setPlane(planeSeat.getPlane());
             flightSeat.setFlight(flight); // Assign to the flight
             flightSeat.setAvailable(random.nextBoolean()); // Randomly set availability
 
@@ -176,5 +230,5 @@ public class DataSeeder implements CommandLineRunner {
     }
     
     
-
+    
 }

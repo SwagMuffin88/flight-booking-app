@@ -16,15 +16,15 @@ public class Flight {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "origin_id")
     private Location origin;
-    
-    @OneToOne
+
+    @ManyToOne(optional = false)
     @JoinColumn(name = "destination_id")
     private Location destination;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "plane_id")
     private Plane plane;
     

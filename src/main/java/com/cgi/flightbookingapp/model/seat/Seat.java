@@ -18,7 +18,7 @@ public class Seat {
     @Enumerated(EnumType.STRING)
     private Placement placement;
     
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "plane_id")
     private Plane plane;
 
