@@ -2,12 +2,10 @@ package com.cgi.flightbookingapp.model.seat;
 
 import com.cgi.flightbookingapp.model.Flight;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Entity @Getter @Setter 
-@RequiredArgsConstructor
+@Entity @Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
 @PrimaryKeyJoinColumn(name = "seat_id")
 public class FlightSeat extends Seat{
     

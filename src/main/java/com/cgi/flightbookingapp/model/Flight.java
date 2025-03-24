@@ -5,12 +5,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
 @Entity @Getter @Setter
-@RequiredArgsConstructor 
+@NoArgsConstructor @AllArgsConstructor 
 public class Flight {
     
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +34,8 @@ public class Flight {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime departureTime;
+    
+    private BigDecimal price;
 
     @Override
     public boolean equals(Object o) {

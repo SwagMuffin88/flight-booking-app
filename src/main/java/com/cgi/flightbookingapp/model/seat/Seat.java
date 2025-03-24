@@ -6,7 +6,7 @@ import lombok.*;
 import java.util.Objects;
 
 @Entity @Getter @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Seat {
     @Id
