@@ -29,9 +29,15 @@ import static com.cgi.flightbookingapp.model.seat.Placement.*;
 public class DataSeeder implements CommandLineRunner {
     private final PlaneRepository planeRepository;
     private final LocationRepository locationRepository;
-    private final SeatRepository seatRepository;
+//    private final SeatRepository seatRepository;
     private final FlightRepository flightRepository;
-    private final FlightSeatRepository flightSeatRepository;
+//    private final FlightSeatRepository flightSeatRepository;
+    
+    private final FlightSeeder flightSeeder;
+    
+    private final PlaneSeeder planeSeeder;
+    
+    private final LocationSeeder locationSeeder;
     
     // Override method for populating database with mock data. Executes in the beginning of running the application.
     @Override
@@ -41,198 +47,24 @@ public class DataSeeder implements CommandLineRunner {
         List<Flight> flightList = flightRepository.findAll(); 
         
         if (planeList.size() == 0) {
-            planeList = createAndAddPlanes();
+            planeList = planeSeeder.createAndAddPlanes();
         }
         
         if (locationList.size() == 0) {
-            locationList = createAndAddLocations();
+            locationList = locationSeeder.createAndAddLocations();
         }
         
         if (flightList.size() == 0) {
             flightList = planeList.stream()
                             .flatMap(plane -> {
                                 try {
-                                    return createFlightsForPlane(plane)
+                                    return flightSeeder.createFlightsForPlane(plane)
                                             .stream();
                                 } catch (Exception e) {
                                     throw new RuntimeException(e);
                                 }
                             })
                             .toList();
-            
         }
-//        System.out.println(planeList.get(0).getFlights().size());
-        
     }
-
-    // Creates new instances of plane objects and adds them to database.  
-    private List<Plane> createAndAddPlanes() {
-        Plane plane = new Plane();
-        plane.setName("Airbus 1");
-        plane.setNumRows(20);
-        plane.setNumColumns(4);
-        
-        plane = planeRepository.save(plane);
-        
-        List<Seat> newSeats = generateSeatsForPlane(plane);
-        plane.setSeats(newSeats);
-        
-        return planeRepository.saveAll(List.of(plane));
-    }
-
-    // Creates new instances of location entities and adds them to database.
-    private List<Location> createAndAddLocations() {
-        Location tln = new Location();
-        tln.setCity("Tallinn");
-        tln.setCountry("Estonia");
-        tln.setAirportNameShort("TLN");
-
-        Location dub = new Location();
-        dub.setCity("Dublin");
-        dub.setCountry("Ireland");
-        dub.setAirportNameShort("DUB");
-
-        Location lis = new Location();
-        lis.setCity("Lisbon");
-        lis.setCountry("Portugal");
-        lis.setAirportNameShort("LIS");
-
-        // todo add 1-2 more locations
-        
-        return locationRepository.saveAll(List.of(tln, dub, lis));
-    }
-    
-    // Generates seat layout for individual plane.
-    private List<Seat> generateSeatsForPlane(Plane plane) {
-        int numRows = plane.getNumRows();
-        int numCol = plane.getNumColumns();
-
-        List<Seat> generatedSeats = new ArrayList<>();
-        
-        for (int row = 1; row <= numRows; row++) {
-            char letter = 'A';
-            for (int seat = 0; seat < numCol; seat++) {
-                Seat newSeat = new Seat();
-
-                newSeat.setNumber(String.valueOf(letter++) + row);
-                newSeat.setPlane(plane);
-                
-                if (seat == 0 || seat == numCol - 1) {
-                    newSeat.setPlacement(WINDOW);
-                } else if (seat == numCol / 2 || seat == numCol / 2 - 1) {
-                    newSeat.setPlacement(AISLE);
-                } else {
-                    newSeat.setPlacement(MIDDLE);
-                }
-
-                generatedSeats.add(newSeat);
-            }
-        }
-        
-        return seatRepository.saveAll(generatedSeats);
-    }
-    
-    // Creates new flights, adds them to plane.
-    private List<Flight> createFlightsForPlane(Plane plane) throws ResourceNotFoundException {
-        List<Flight> flights = new ArrayList<>();
-        
-        Random random = new Random();
-        List<Location> allLocations = getLocationsFromDb();
-
-        Location origin = getOriginLocation("TLN");
-        List<Location> destinations = getDestinations(allLocations, origin);
-        
-        // Seat layout from plane
-        List<Seat> planeSeats = getSeatsFromPlane(plane);
-        
-        // Create 10 flights with randomized locations and dates
-        flights = generateGivenNrOfFlights(plane, planeSeats, random, origin, destinations, 10);
-        
-        plane.setFlights(flights);
-        planeRepository.save(plane);
-
-        return flightRepository.saveAll(flights);
-    }
-
-    // Extracted from previous method.
-    private List<Flight> generateGivenNrOfFlights(
-            Plane plane, List<Seat> planeSeats, Random random, 
-            Location origin, List<Location> destinations, int n
-    ) {
-        List<Flight> flights = new ArrayList<>();
-        
-        // Initial departure time
-        LocalDateTime departureTime = LocalDateTime.now().plusDays(1);
-
-        for (int i = 0; i <= n; i++) {
-            Flight flight = new Flight();
-
-            flight.setOrigin(origin);
-            flight.setDestination(
-                    destinations.get(random.nextInt(0, destinations.size()))
-            );
-            flight.setDepartureTime(departureTime);
-            flight.setPlane(plane);
-            
-            // Generate seats for individual flight based on the plane layout
-            List<FlightSeat> flightSeats = assignPlaneSeatsToFlight(flight, planeSeats);
-            // todo separate methods for getting seats and assigning to flight
-            
-            flight.setFlightSeats(flightSeats);
-            
-            flights.add(flight);
-
-            // Calculate next departure time
-            int extraHours = random.nextInt(6);
-            departureTime = departureTime.plusHours(24 + extraHours);
-        }
-        return flights;
-    }
-
-    private List<Location> getLocationsFromDb() {
-        return locationRepository.findAll();
-    }
-    
-    //Returns origin location based on given airport code.
-    private Location getOriginLocation(String originCode) throws ResourceNotFoundException {
-        return locationRepository.findByAirportNameShort(originCode)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Origin location not found"));
-    }
-    
-    // Filters all locations, excluding the origin location.
-    private List<Location> getDestinations(List<Location> allLocations, Location origin) {
-        return allLocations.stream()
-                .filter(l -> !l.getId()
-                                .equals(origin.getId()
-                                ))
-                .collect(Collectors.toList());
-    }
-    
-     private List<Seat> getSeatsFromPlane(Plane plane) {
-        return seatRepository.findByPlaneId(plane.getId());
-     }
-    
-    // Creates a list of flight seats based on plane seat layout
-    private List<FlightSeat> assignPlaneSeatsToFlight(Flight flight, List<Seat> planeSeats) {
-        List<FlightSeat> flightSeats = new ArrayList<>();
-        Random random = new Random();
-
-        for (Seat planeSeat : planeSeats) {
-            FlightSeat flightSeat = new FlightSeat();
-            
-            flightSeat.setNumber(planeSeat.getNumber());
-            flightSeat.setPlacement(planeSeat.getPlacement());
-            flightSeat.setPlane(planeSeat.getPlane());
-            flightSeat.setFlight(flight); 
-            flightSeat.setAvailable(random.nextBoolean()); 
-
-            flightSeats.add(flightSeat);
-        }
-
-        return flightSeatRepository.saveAll(flightSeats);
-    }
-    
-    
-    
 }

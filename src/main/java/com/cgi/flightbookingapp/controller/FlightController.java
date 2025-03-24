@@ -20,13 +20,9 @@ public class FlightController {
     
     @GetMapping("/all")
     public ResponseEntity<List<FlightDTO>> getAllFlights() {
-        try {
             return new ResponseEntity<>(
                     flightService.getAllFlights(),
                     HttpStatus.OK
             );
-        } catch (Exception e) {
-            throw new RuntimeException(); // specify exception
-        }
     }
 }
