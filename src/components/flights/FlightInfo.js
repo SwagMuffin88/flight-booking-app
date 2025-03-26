@@ -1,29 +1,28 @@
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import api from '../../api/AxiosConfig';
+import FlightSeats from "./FlightSeats";
 
 const FlightDetails = () => {
-    const { id } = useParams(); // default value is undefined?
-    // const flightId = localStorage.getItem('flightId')
-    const [flight, setFlight] = useState();
-    // const params = useParams();
+    const { id } = useParams();
+    const [flight, setFlight] = useState(null);
 
     useEffect(() => {
         const fetchFlight = async () => {
             try {
-                const response = await api.get(`/flights/` + id);
+                const response = await api.get(`/flights/flight/${id}`);
                 setFlight(response.data);
-                console.log(response.data);
             } catch (error) {
-                console.error('Failed to fetch flight details', error);
+                console.error(error);
             }
         };
 
-        fetchFlight();
-    }, []);
-
-
-    // if (!flight) return <p>Loading flight details...</p>;
+        if (id) {
+            fetchFlight();
+        }
+    }, [id]);
+    
+    if (!flight) return <p>Loading flight details...</p>;
 
     return (
         <div>
@@ -32,7 +31,10 @@ const FlightDetails = () => {
             <p><strong>To:</strong> {flight.destination.city}</p>
             <p><strong>Departure time:</strong> {new Date(flight.departureTime).toLocaleString()}</p>
             <p><strong>Price:</strong> €{flight.price}</p>
-            {/* Add more fields as needed */}
+            <div>
+                {/*<FlightSeats flight={flight}/>*/}
+                *Seat layout goes here*
+            </div>
         </div>
     );
 };

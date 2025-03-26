@@ -1,6 +1,7 @@
 import React from "react";
 import {Table, TableBody, TableCell, TableHead, TableRow} from "@mui/material";
 import {useNavigate} from "react-router-dom";
+// import FlightSeats from "./FlightSeats";
 
 const FlightsTable = ({ flights }) => {
     if (!flights || flights.length === 0) return <p>No flights found.</p>;
@@ -8,7 +9,8 @@ const FlightsTable = ({ flights }) => {
     const navigate = useNavigate();
 
     const handleView = (flightId) => {
-        navigate(`/flights/${flightId}`);
+        // console.log("Flight id:" + flightId);
+        navigate(`/flights/flight/${flightId}`);
     }
 
     return (
@@ -36,6 +38,7 @@ const FlightsTable = ({ flights }) => {
                 ))}
             </TableBody>
         </Table>
+        
     );
 };
 

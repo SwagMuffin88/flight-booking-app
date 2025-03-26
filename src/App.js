@@ -6,6 +6,7 @@ import Layout from "./components/Layout";
 import {Routes, Route} from 'react-router-dom';
 import Home from './components/home/Home';
 import FlightInfo from './components/flights/FlightInfo';
+import FlightSeats from './components/flights/FlightSeats';
 
 function App() {
 
@@ -16,7 +17,7 @@ function App() {
     try {
       const response = await api.get("/flights/all")
 
-      console.log(response.data)
+      // console.log(response.data)
       setFlights(response.data);
 
     } catch(err) {
@@ -32,8 +33,10 @@ function App() {
     <div className="App">
       <Routes>
         <Route path="/" element={<Layout/>}>
-          <Route path="/" element={<Home flights={flights} />} />
-          <Route path="flights/:id" element={<FlightInfo />} />
+          <Route index element={<Home flights={flights} />} />
+          <Route path="flights/flight/:id" element={<FlightInfo />} >
+            {/*<Route index element={<FlightSeats />} />*/}
+          </Route>
         </Route>
       </Routes>
     </div>
