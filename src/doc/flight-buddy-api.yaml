@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: FlightBuddy application
+  title: FlightBuddy API
   description: 
     Flight booking application codenamed "FlightBuddy" is a simulated system where users can view, 
     filter and book flights.
@@ -9,35 +9,110 @@ servers:
   - url: 'http://localhost:8080/'
     description: Local development server
 
+
 # Paths list generated from controller classes using ChatGPT
 paths:
   /flights/all:
     get:
       summary: Get all flights
-      description: Retrieves a list of all available flights.
-      operationId: getAllFlights
       tags:
         - Flights
       responses:
-        "200":
-          description: Successful response with a list of flights.
+        '200':
+          description: List of all available flights
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/FlightDTO"
-        "500":
-          description: Internal server error.
+                  $ref: '#/components/schemas/FlightDTO'
+        '500':
+          description: Unexpected server error
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                ServerError:
+                  summary: Internal server error
+                  value:
+                    timestamp: "2025-03-26T12:00:00Z"
+                    status: 500
+                    error: "Internal Server Error"
+                    path: "/flights/all"
+
+
+  /flights/flight/{id}:
+    get:
+      summary: Get flight by ID
+      tags:
+        - Flights
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Flight details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlightDTO'
+        '404':
+          description: Flight not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /flights/flight/{id}/seats:
+    get:
+      summary: Get seats for a specific flight
+      tags:
+        - Flights
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: List of seats for the given flight
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FlightSeatDTO'
+        '404':
+          description: Flight not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
 
 ## Components list generated using ChatGPT
 components:
   schemas:
-    Flight:
+    FlightDTO:
       type: object
       properties:
         id:
@@ -45,81 +120,161 @@ components:
           format: int64
           example: 1
         origin:
-          $ref: '#/components/schemas/Location'
+          $ref: '#/components/schemas/LocationDTO'
         destination:
-          $ref: '#/components/schemas/Location'
-        plane:
-          $ref: '#/components/schemas/Plane'
+          $ref: '#/components/schemas/LocationDTO'
+        planeName:
+          type: string
+          example: "Airbus 320"
         departureTime:
           type: string
           format: date-time
-          example: "2025-04-15 10:30"
-     
-    Seat:
+          example: "2025-04-01T14:30:00"
+        seats:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlightSeatDTO'
+        price:
+          type: number
+          format: double
+          example: 199.99
+          
+    FlightSeatDTO:
       type: object
       properties:
-        id:
-          type: integer
-          format: int64
-          example: 101
+        number:
+          type: string
+          example: "12A"
         isAvailable:
           type: boolean
           example: true
         placement:
-          $ref: '#/components/schemas/Placement'
-        plane:
-          $ref: '#/components/schemas/Plane'
-        number:
           type: string
-          example: "A10"
-          
-    Plane:
+          enum:
+            - WINDOW
+            - AISLE
+            - MIDDLE
+          example: WINDOW
+        planeName:
+          type: string
+          example: "Airbus 320"
+    
+    LocationDTO:
       type: object
       properties:
-        id:
-          type: integer
-          format: int64
-          example: 10
-        name:
-          type: string
-          example: "Boeing 737"
-        numRows:
-          type: integer
-          example: 20
-        numColumns:
-          type: integer
-          example: 6
-        flights:
-          type: array
-          items:
-            $ref: '#/components/schemas/Flight'
-        seats:
-          type: array
-          items:
-            $ref: '#/components/schemas/Seat'
-
-    Location:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-          example: 101
         airportNameShort:
           type: string
-          example: "JFK"
+          example: "TLN"
         country:
           type: string
-          example: "United States"
+          example: "Estonia"
         city:
           type: string
-          example: "New York"
-          
-    Placement:
-      type: string
-      enum:
-        - WINDOW
-        - AISLE
-      example: "WINDOW"
+          example: "Tallinn"
+    
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          example: "2025-03-26T14:45:00Z"
+        status:
+          type: integer
+          example: 404
+        error:
+          type: string
+          example: "Not Found"
+        message:
+          type: string
+          example: "Flight with ID 123 not found"
+        path:
+          type: string
+          example: "/flights/flight/123"
+    
+#    Flight:
+#      type: object 
+#      properties:
+#        id:
+#          type: integer
+#          format: int64
+#          example: 1
+#        origin:
+#          $ref: '#/components/schemas/Location'
+#        destination:
+#          $ref: '#/components/schemas/Location'
+#        plane:
+#          $ref: '#/components/schemas/Plane'
+#        departureTime:
+#          type: string
+#          format: date-time
+#          example: "2025-04-15 10:30"
+#     
+#    Seat:
+#      type: object
+#      properties:
+#        id:
+#          type: integer
+#          format: int64
+#          example: 101
+#        isAvailable:
+#          type: boolean
+#          example: true
+#        placement:
+#          $ref: '#/components/schemas/Placement'
+#        plane:
+#          $ref: '#/components/schemas/Plane'
+#        number:
+#          type: string
+#          example: "A10"
+#          
+#    Plane:
+#      type: object
+#      properties:
+#        id:
+#          type: integer
+#          format: int64
+#          example: 10
+#        name:
+#          type: string
+#          example: "Boeing 737"
+#        numRows:
+#          type: integer
+#          example: 20
+#        numColumns:
+#          type: integer
+#          example: 6
+#        flights:
+#          type: array
+#          items:
+#            $ref: '#/components/schemas/Flight'
+#        seats:
+#          type: array
+#          items:
+#            $ref: '#/components/schemas/Seat'
+#
+#    Location:
+#      type: object
+#      properties:
+#        id:
+#          type: integer
+#          format: int64
+#          example: 101
+#        airportNameShort:
+#          type: string
+#          example: "JFK"
+#        country:
+#          type: string
+#          example: "United States"
+#        city:
+#          type: string
+#          example: "New York"
+#          
+#    Placement:
+#      type: string
+#      enum:
+#        - WINDOW
+#        - AISLE
+#      example: "WINDOW"
       
     
