@@ -15,12 +15,14 @@ public class FlightDTOMapper implements Function<Flight, FlightDTO> {
     @Override
     public FlightDTO apply(Flight flight) {
         return new FlightDTO(
+                flight.getId(),
                 locationDTOMapper.apply(
                         flight.getOrigin()), 
                 locationDTOMapper.apply(
                         flight.getDestination()),
                 flight.getPlane().getName(),
-                flight.getDepartureTime()
+                flight.getDepartureTime(),
+                flight.getPrice()
         );
     }
 }

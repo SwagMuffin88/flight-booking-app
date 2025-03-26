@@ -34,7 +34,7 @@ public class Flight {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime departureTime;
-    
+
     private BigDecimal price;
 
     @Override

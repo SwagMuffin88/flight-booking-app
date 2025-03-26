@@ -87,8 +87,9 @@ public class FlightSeeder {
     
     private BigDecimal randomizePrice() {
         double rawPrice = 135 + (Math.random() * 250);
-        double rounded = Math.round(rawPrice * 100.0) / 100.0;
-        return  BigDecimal.valueOf(rounded);
+        
+        return BigDecimal.valueOf(Math.round(
+                        rawPrice * 100.0) / 100.0
+        );
     }
-    
 }

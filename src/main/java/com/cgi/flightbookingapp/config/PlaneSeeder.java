@@ -45,7 +45,7 @@ public class PlaneSeeder {
             for (int seat = 0; seat < numCol; seat++) {
                 Seat newSeat = new Seat();
 
-                newSeat.setNumber(String.valueOf(letter++) + row);
+                newSeat.setNumber(row + String.valueOf(letter++));
                 newSeat.setPlane(plane);
 
                 if (seat == 0 || seat == numCol - 1) {
