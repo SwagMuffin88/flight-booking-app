@@ -20,12 +20,12 @@ public class FlightController {
     @GetMapping("/all")
     public ResponseEntity<List<FlightDTO>> getAllFlights() {
             return new ResponseEntity<>(
-                    flightService.getAllFlights(),
+                    flightService.getAllFlightsAsDTOs(),
                     HttpStatus.OK
             );
     }
     
-    // get flight by id
+    // Get specific individual flight
     @GetMapping("/flight/{id}")
     public ResponseEntity<FlightDTO> getFlightById(@PathVariable Long id) {
         try {
@@ -37,8 +37,36 @@ public class FlightController {
             throw new RuntimeException(e);
         }
     }
+
+    // Get all flights filtered by destination
+    @GetMapping("/flights/by-destination/{airportNameShort}")
+    public ResponseEntity<List<FlightDTO>> getAllFlightsByDestination(@PathVariable String airportNameShort) {
+        try {
+            return new ResponseEntity<>(
+                    flightService.getFlightDTOsByDestination(airportNameShort),
+                    HttpStatus.OK
+            );
+        } catch (ResourceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Get all seats sorted by given property (price/departure time)
+    @GetMapping("/flights/sorted-by/{property}")
+    public ResponseEntity<List<FlightDTO>> getAllFlightsSortedByProperty(
+            @PathVariable String property,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        try {
+            return new ResponseEntity<>(
+                    flightService.getAllFlightDTOsSortedByProperty(property, direction),
+                    HttpStatus.OK);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
     
-//     get flight seats
+    // Get seats of individual flight
     @GetMapping("/flight/{id}/seats")
     public ResponseEntity<List<FlightSeatDTO>> getFlightSeatsById(@PathVariable Long id) {
         try {

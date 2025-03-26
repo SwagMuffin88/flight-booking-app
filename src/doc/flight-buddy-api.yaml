@@ -107,6 +107,74 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+                
+  /flights/by-destination/{airportNameShort}:
+    get:
+      summary: Get all flights by destination airport code
+      description: Returns a list of flights that have the given destination airport code (e.g. TLN, DUB).
+      tags:
+        - Flights
+      parameters:
+        - name: airportNameShort
+          in: path
+          required: true
+          description: Airport IATA code for the destination (e.g. TLN)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of flights matching the given destination
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FlightDTO'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                
+  /flights/sorted-by/{property}:
+    get:
+      summary: Get all flights sorted by a property
+      description: Returns flights sorted by a specific property such as `price` or `departureTime`, 
+        in ascending or descending order.
+      tags:
+        - Flights
+      parameters:
+        - name: property
+          in: path
+          required: true
+          description: Property to sort by (`price` or `departureTime`)
+          schema:
+            type: string
+            enum: [ price, departureTime ]
+        - name: direction
+          in: query
+          required: false
+          description: Sorting direction (`asc` for ascending or `desc` for descending)
+          schema:
+            type: string
+            default: asc
+            enum: [ asc, desc ]
+      responses:
+        '200':
+          description: List of sorted flights
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FlightDTO'
+        '400':
+          description: Invalid property or direction parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 
 ## Components list generated using ChatGPT

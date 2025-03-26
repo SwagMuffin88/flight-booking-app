@@ -32,7 +32,7 @@ public class FlightDTOMapper implements Function<Flight, FlightDTO> {
                         flight.getDestination()),
                 flight.getPlane().getName(),
                 flight.getDepartureTime(),
-                seats,
+//                seats,
                 flight.getPrice()
         );
     }

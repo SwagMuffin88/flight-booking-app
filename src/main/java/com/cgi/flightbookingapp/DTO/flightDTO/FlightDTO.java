@@ -4,6 +4,7 @@ import com.cgi.flightbookingapp.DTO.locationDTO.LocationDTO;
 import com.cgi.flightbookingapp.DTO.planeDTO.PlaneDTO;
 import com.cgi.flightbookingapp.DTO.seatDTO.FlightSeatDTO;
 import com.cgi.flightbookingapp.model.seat.FlightSeat;
+import org.springframework.context.annotation.Lazy;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -15,7 +16,7 @@ public record FlightDTO(
         LocationDTO destination,
         String planeName,     // Instead of a Plane DTO, which causes cyclical dependency
         LocalDateTime departureTime,
-        List<FlightSeatDTO> seats,
+//        List<FlightSeatDTO> seats,
         BigDecimal price
 ) {
 }
