@@ -33,7 +33,7 @@ const FlightDetails = () => {
             <p><strong>Price:</strong> €{flight.price}</p>
             <div>
                 {/*<FlightSeats flight={flight}/>*/}
-                *Seat layout goes here*
+                {/*(Seat layout goes here)*/}
             </div>
         </div>
     );

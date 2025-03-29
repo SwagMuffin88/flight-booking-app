@@ -30,7 +30,7 @@ const FlightsTable = ({ flights }) => {
                         <TableCell>{flight.origin.city} ({flight.origin.airportNameShort}) </TableCell>
                         <TableCell>{flight.destination.city} ({flight.destination.airportNameShort})</TableCell>
                         <TableCell>{new Date(flight.departureTime).toLocaleString()}</TableCell>
-                        <TableCell>{flight.price}</TableCell>
+                        <TableCell>€{flight.price}</TableCell>
                         <TableCell>
                             <button onClick={() => handleView(flight.id)}>View</button>
                         </TableCell>
