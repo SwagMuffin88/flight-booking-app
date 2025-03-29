@@ -38,3 +38,4 @@ flight-booking-app-frontend/.env.*.local
 flight-booking-app-frontend/node_modules/
 flight-booking-app-frontend/build/
 
+application.yml
