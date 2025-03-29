@@ -19,9 +19,11 @@ import java.util.stream.Collectors;
 
 import static com.cgi.flightbookingapp.model.seat.Placement.*;
 
-/*  The purpose of this class is to initialize database with pre-made dataset and thus eliminate the need
+/*  
+* The purpose of this class is to initialize database with pre-made dataset and thus eliminate the need
 * to manually create data for testing purposes from scratch. Randomizing seat availability for each flight 
-* is also performed in this class.*/
+* is also performed in this class.
+* */
 
 // Based on Studyeasy article: https://studyeasy.org/course-articles/spring-boot-articles/s03l04-adding-seed-data-in-the-database/
 
@@ -29,32 +31,28 @@ import static com.cgi.flightbookingapp.model.seat.Placement.*;
 public class DataSeeder implements CommandLineRunner {
     private final PlaneRepository planeRepository;
     private final LocationRepository locationRepository;
-//    private final SeatRepository seatRepository;
     private final FlightRepository flightRepository;
-//    private final FlightSeatRepository flightSeatRepository;
     
     private final FlightSeeder flightSeeder;
-    
     private final PlaneSeeder planeSeeder;
-    
     private final LocationSeeder locationSeeder;
     
-    // Override method for populating database with mock data. Executes in the beginning of running the application.
+    // Executes in the beginning of running the application.
     @Override
     public void run(String... args) throws Exception {
         List<Plane> planeList = planeRepository.findAll();
         List<Location> locationList = locationRepository.findAll();
         List<Flight> flightList = flightRepository.findAll(); 
         
-        if (planeList.size() == 0) {
+        if (planeList.isEmpty()) {
             planeList = planeSeeder.createAndAddPlanes();
         }
         
-        if (locationList.size() == 0) {
+        if (locationList.isEmpty()) {
             locationList = locationSeeder.createAndAddLocations();
         }
         
-        if (flightList.size() == 0) {
+        if (flightList.isEmpty()) {
             flightList = planeList.stream()
                             .flatMap(plane -> {
                                 try {

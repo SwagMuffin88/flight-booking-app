@@ -10,16 +10,19 @@ flight-booking-app/
 │   │   │   ├── config/                     # Spring configuration files (e.g. CORS, DataSeeder)
 │   │   │   ├── controller/                 # REST API controllers
 │   │   │   ├── DTO/                        # Data Transfer Objects for API responses
+│   │   │   ├── exception/                  # Custom exceptions
 │   │   │   ├── model/                      # JPA entity classes
+│   │   │   ├── repository/                 # JPA repositories for data access
 │   │   │   └── service/                    # Business logic and service layer
 │   │   └── resources/
 │   │       ├── application.yml             # Spring Boot configuration
-│   │       └── openapi.yml                 # OpenAPI documentation
 │   └── test/                               # Unit and integration tests
 │
 ├── flight-booking-app-frontend/            # React frontend app
 │   ├── public/                             # Static assets
 │   ├── src/                                # React components, routes, and styling
+│   │   ├── api/                            # AxiosConfig
+│   │   ├── components/                     # Components for React application
 │   ├── .gitignore
 │   ├── package.json
 │   └── README.md

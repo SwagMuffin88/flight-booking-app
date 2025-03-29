@@ -58,7 +58,7 @@ public class FlightService {
     }
 
 
-    // Get flights ordered by price, get flights ordered by date (can have additional properties added)
+    // Get flights ordered given property - price, departure time (can have additional properties added)
     public List<FlightDTO> getAllFlightDTOsSortedByProperty(String property, String direction) {
         List<String> validProperties = List.of("price", "departureTime");
         
@@ -77,7 +77,6 @@ public class FlightService {
                 .collect(Collectors.toList());
     }
 
-    // Get all flights by destination
     public List<FlightDTO> getFlightDTOsByDestination(String airportNameShort) throws ResourceNotFoundException {
         List<FlightDTO> filteredFlights = getAllFlights()
                 .stream()
@@ -95,8 +94,6 @@ public class FlightService {
          
         return filteredFlights;
     }
-
-    // get all flights within date range
-
+    
     
 }
