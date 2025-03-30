@@ -16,6 +16,7 @@ flight-booking-app/
 │   │   │   └── service/                    # Business logic and service layer
 │   │   └── resources/
 │   │       ├── application.yml             # Spring Boot configuration
+│   │       └── setup.sql                   # Setup file for Postgres database
 │   └── test/                               # Unit and integration tests
 │
 ├── flight-booking-app-frontend/            # React frontend app
@@ -26,6 +27,11 @@ flight-booking-app/
 │   ├── .gitignore
 │   ├── package.json
 │   └── README.md
+│
+├── doc/                                    # Documentation files
+│   ├── openapi.yaml                        # OpenAPI YAML spec
+│   ├── project-structure.md                # (This file)
+│   └── setup-guide.md                      # App setup guide
 │
 ├── .gitignore
 ├── .gitattributes
