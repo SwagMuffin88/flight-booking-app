@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
 public class PlaneDTOMapper implements Function<Plane, PlaneDTO> {
     private final FlightDTOMapper flightDTOMapper;
     
-//    private final SeatDTOMapper seatDTOMapper;
-    
     @Override
     public PlaneDTO apply(Plane plane) {
 
@@ -23,18 +21,12 @@ public class PlaneDTOMapper implements Function<Plane, PlaneDTO> {
                 .stream()
                 .map(flightDTOMapper)
                 .collect(Collectors.toList());
-        
-//        List<SeatDTO> seats = plane.getSeats()
-//                .stream()
-//                .map(seatDTOMapper)
-//                .collect(Collectors.toList());
 
         return new PlaneDTO(
                 plane.getName(),
                 plane.getNumRows(),
                 plane.getNumColumns(),
                 flights
-//                seats
         );
     }
 }

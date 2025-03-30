@@ -1,0 +1,154 @@
+openapi: 3.0.1
+info:
+  title: Flight Booking API
+  version: 1.0.0
+  description: >
+    This API allows users to browse and filter flights.
+    It supports operations such as retrieving flight details, seats, and destinations.
+servers:
+- url: http://localhost:8080
+  description: Local development server
+paths:
+  /flights/flights/sorted-by/{property}:
+    get:
+      tags:
+      - flight-controller
+      operationId: getAllFlightsSortedByProperty
+      parameters:
+      - name: property
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: direction
+        in: query
+        required: false
+        schema:
+          type: string
+          default: asc
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FlightDTO"
+  /flights/flights/by-destination/{airportNameShort}:
+    get:
+      tags:
+      - flight-controller
+      operationId: getAllFlightsByDestination
+      parameters:
+      - name: airportNameShort
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FlightDTO"
+  /flights/flight/{id}:
+    get:
+      tags:
+      - flight-controller
+      operationId: getFlightById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/FlightDTO"
+  /flights/flight/{id}/seats:
+    get:
+      tags:
+      - flight-controller
+      operationId: getFlightSeatsById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FlightSeatDTO"
+  /flights/all:
+    get:
+      tags:
+      - flight-controller
+      operationId: getAllFlights
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FlightDTO"
+components:
+  schemas:
+    FlightDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        origin:
+          $ref: "#/components/schemas/LocationDTO"
+        destination:
+          $ref: "#/components/schemas/LocationDTO"
+        planeName:
+          type: string
+        departureTime:
+          type: string
+          format: date-time
+        price:
+          type: number
+    LocationDTO:
+      type: object
+      properties:
+        airportNameShort:
+          type: string
+        country:
+          type: string
+        city:
+          type: string
+    FlightSeatDTO:
+      type: object
+      properties:
+        number:
+          type: string
+        isAvailable:
+          type: boolean
+        placement:
+          type: string
+          enum:
+          - WINDOW
+          - MIDDLE
+          - AISLE
+        planeName:
+          type: string

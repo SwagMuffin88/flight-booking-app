@@ -1,7 +1,6 @@
 package com.cgi.flightbookingapp.DTO.seatDTO;
 
 import com.cgi.flightbookingapp.model.seat.FlightSeat;
-import com.cgi.flightbookingapp.model.seat.Seat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +14,7 @@ public class FlightSeatDTOMapper implements Function<FlightSeat, FlightSeatDTO> 
         return new FlightSeatDTO(
                 seat.getNumber(),
                 seat.isAvailable(),
-                seat.getPlacement(),
-                seat.getPlane().getName()
+                seat.getPlacement()
         );
     }
 }

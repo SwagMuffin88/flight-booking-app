@@ -14,7 +14,6 @@ public class LocationSeeder {
 
     private final LocationRepository locationRepository;
 
-    // Creates new instances of location entities and adds them to database.
     protected List<Location> createAndAddLocations() {
         Location tln = new Location();
         tln.setCity("Tallinn");
@@ -31,23 +30,19 @@ public class LocationSeeder {
         lis.setCountry("Portugal");
         lis.setAirportNameShort("LIS");
 
-        // todo add 1-2 more locations
-
         return locationRepository.saveAll(List.of(tln, dub, lis));
     }
     protected List<Location> getLocationsFromDb() {
         return locationRepository.findAll();
     }
 
-    //Returns origin location based on given airport code.
     protected Location getOriginLocation(String originCode) throws ResourceNotFoundException {
         return locationRepository.findByAirportNameShort(originCode)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Origin location not found"));
     }
 
-    // Filters all locations, excluding the origin location.
-    protected List<Location> getDestinations(List<Location> allLocations, Location origin) {
+    protected List<Location> getLocationsExcludingOrigin(List<Location> allLocations, Location origin) {
         return allLocations.stream()
                 .filter(l -> !l.getId()
                         .equals(origin.getId()

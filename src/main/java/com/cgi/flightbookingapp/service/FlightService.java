@@ -52,13 +52,14 @@ public class FlightService {
     
     public List<FlightSeatDTO> getFlightSeatsForFlightAsDTO(Long flightId) throws ResourceNotFoundException {
         List<FlightSeat> flightSeats = getFlightSeatsForFlight(flightId);
+        
         return flightSeats.stream()
                 .map(flightSeatDTOMapper)
                 .toList();
     }
 
 
-    // Get flights ordered by price, get flights ordered by date (can have additional properties added)
+    // Get flights ordered given property - price, departure time (can have additional properties added)
     public List<FlightDTO> getAllFlightDTOsSortedByProperty(String property, String direction) {
         List<String> validProperties = List.of("price", "departureTime");
         
@@ -77,8 +78,7 @@ public class FlightService {
                 .collect(Collectors.toList());
     }
 
-    // Get all flights by destination
-    public List<FlightDTO> getFlightDTOsByDestination(String airportNameShort) throws ResourceNotFoundException {
+    public List<FlightDTO> getFlightDTOsFilteredByDestination(String airportNameShort) throws ResourceNotFoundException {
         List<FlightDTO> filteredFlights = getAllFlights()
                 .stream()
                 .filter(f -> 
@@ -96,7 +96,26 @@ public class FlightService {
         return filteredFlights;
     }
 
-    // get all flights within date range
+    // Method for getting recommended seats unfinished
+    public List<FlightSeatDTO> getRecommendedSeats(Long id, int seatCount) throws ResourceNotFoundException {
+        List<FlightSeat> chosenSeats = getAvailableSeatsOfFlight(id)
+                .stream()
+                .limit(seatCount)
+                .collect(Collectors.toList());
 
+        // Add additional filtering
+
+//        return availableSeats.stream()
+//                .map(flightSeatDTOMapper)
+//                .collect(Collectors.toList());
+        return null;
+    }
     
+    private List<FlightSeat> getAvailableSeatsOfFlight(Long id) throws ResourceNotFoundException {
+        return getFlightById(id)
+                .getFlightSeats()
+                .stream()
+                .filter(FlightSeat::isAvailable)
+                .collect(Collectors.toList());
+    }
 }
