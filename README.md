@@ -58,4 +58,4 @@ faasis veenduda, et viited REST endpointidele toimivad korrektselt. Projekti tei
 ka raskuste otsa algsest ajaplaanist kinnipidamisega seetõttu, et mõndade probleemide lahendamise jaoks
 lihtsalt kulus oodatust rohkem aega. See on lihtsalt arenduse protsessi olemus.
 
-Kuigi mul ei olnud võimalik implementeerida kõiki nõudeid, panustsin eesmärki veenduda olemasolevate funktsionaalsuste toimimises.
+Kuigi mul ei olnud võimalik implementeerida kõiki nõudeid, panustasin eesmärki veenduda olemasolevate funktsionaalsuste toimimises.
