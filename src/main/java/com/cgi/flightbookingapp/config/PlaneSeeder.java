@@ -18,8 +18,8 @@ public class PlaneSeeder {
     private final PlaneRepository planeRepository;
     private final SeatRepository seatRepository;
 
-    // Creates new instances of plane objects and adds them to database.
-    protected List<Plane> createAndAddPlanes() {
+    // Method currently includes one test plane object, but can be modified to include multiple new plane objects.
+    protected List<Plane> createAndAddNewPlanes() {
         Plane plane = new Plane();
         plane.setName("Airbus 1");
         plane.setNumRows(20);
@@ -29,11 +29,10 @@ public class PlaneSeeder {
 
         List<Seat> newSeats = generateSeatsForPlane(plane);
         plane.setSeats(newSeats);
-
-        return planeRepository.saveAll(List.of(plane));
+        
+        return planeRepository.saveAll(List.of(plane)); 
     }
 
-    // Generates seat layout for individual plane.
     protected List<Seat> generateSeatsForPlane(Plane plane) {
         int numRows = plane.getNumRows();
         int numCol = plane.getNumColumns();

@@ -1,31 +1,22 @@
 package com.cgi.flightbookingapp.config;
 
-import com.cgi.flightbookingapp.exception.ResourceNotFoundException;
 import com.cgi.flightbookingapp.model.Plane;
 import com.cgi.flightbookingapp.model.Flight;
 import com.cgi.flightbookingapp.model.Location;
-import com.cgi.flightbookingapp.model.seat.FlightSeat;
-import com.cgi.flightbookingapp.model.seat.Seat;
 import com.cgi.flightbookingapp.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-
-import static com.cgi.flightbookingapp.model.seat.Placement.*;
 
 /*  
 * The purpose of this class is to initialize database with pre-made dataset and thus eliminate the need
-* to manually create data for testing purposes from scratch. Randomizing seat availability for each flight 
-* is also performed in this class.
+* to manually create data for testing and development purposes from scratch. Randomizing seat availability for each 
+* flight is also performed in this class.
+*
+* Based on Studyeasy article: 
+* https://studyeasy.org/course-articles/spring-boot-articles/s03l04-adding-seed-data-in-the-database/
 * */
-
-// Based on Studyeasy article: https://studyeasy.org/course-articles/spring-boot-articles/s03l04-adding-seed-data-in-the-database/
 
 @Component @RequiredArgsConstructor
 public class DataSeeder implements CommandLineRunner {
@@ -45,7 +36,7 @@ public class DataSeeder implements CommandLineRunner {
         List<Flight> flightList = flightRepository.findAll(); 
         
         if (planeList.isEmpty()) {
-            planeList = planeSeeder.createAndAddPlanes();
+            planeList = planeSeeder.createAndAddNewPlanes();
         }
         
         if (locationList.isEmpty()) {
@@ -56,7 +47,7 @@ public class DataSeeder implements CommandLineRunner {
             flightList = planeList.stream()
                             .flatMap(plane -> {
                                 try {
-                                    return flightSeeder.createFlightsForPlane(plane)
+                                    return flightSeeder.createFlightsAndAddToPlane(plane)
                                             .stream();
                                 } catch (Exception e) {
                                     throw new RuntimeException(e);

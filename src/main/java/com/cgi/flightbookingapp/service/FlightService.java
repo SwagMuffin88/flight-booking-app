@@ -52,6 +52,7 @@ public class FlightService {
     
     public List<FlightSeatDTO> getFlightSeatsForFlightAsDTO(Long flightId) throws ResourceNotFoundException {
         List<FlightSeat> flightSeats = getFlightSeatsForFlight(flightId);
+        
         return flightSeats.stream()
                 .map(flightSeatDTOMapper)
                 .toList();
@@ -77,7 +78,7 @@ public class FlightService {
                 .collect(Collectors.toList());
     }
 
-    public List<FlightDTO> getFlightDTOsByDestination(String airportNameShort) throws ResourceNotFoundException {
+    public List<FlightDTO> getFlightDTOsFilteredByDestination(String airportNameShort) throws ResourceNotFoundException {
         List<FlightDTO> filteredFlights = getAllFlights()
                 .stream()
                 .filter(f -> 
@@ -94,6 +95,27 @@ public class FlightService {
          
         return filteredFlights;
     }
+
+    // Method for getting recommended seats unfinished
+    public List<FlightSeatDTO> getRecommendedSeats(Long id, int seatCount) throws ResourceNotFoundException {
+        List<FlightSeat> chosenSeats = getAvailableSeatsOfFlight(id)
+                .stream()
+                .limit(seatCount)
+                .collect(Collectors.toList());
+
+        // Add additional filtering
+
+//        return availableSeats.stream()
+//                .map(flightSeatDTOMapper)
+//                .collect(Collectors.toList());
+        return null;
+    }
     
-    
+    private List<FlightSeat> getAvailableSeatsOfFlight(Long id) throws ResourceNotFoundException {
+        return getFlightById(id)
+                .getFlightSeats()
+                .stream()
+                .filter(FlightSeat::isAvailable)
+                .collect(Collectors.toList());
+    }
 }

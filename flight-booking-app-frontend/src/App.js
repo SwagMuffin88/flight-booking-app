@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import {useEffect, useState} from 'react';
 import api from './api/AxiosConfig'
@@ -16,10 +15,7 @@ function App() {
 
     try {
       const response = await api.get("/flights/all")
-
-      // console.log(response.data)
       setFlights(response.data);
-
     } catch(err) {
       console.log(err);
     }

@@ -9,6 +9,5 @@ public record PlaneDTO(
         int numRows,
         int numColumns,
         List<FlightDTO> flights
-//        List<SeatDTO> seats
 ) {
 }

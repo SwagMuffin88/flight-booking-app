@@ -14,6 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/*
+* This is a helper class for methods that deal with getting a seat layout of given plane and assigning it to a new 
+* flight. The purpose of keeping those methods separately is to avoid cluttering the FlightSeeder class and improve 
+* readability.
+* */
+
 @Component @RequiredArgsConstructor
 public class FlightSeederHelper {
     
@@ -25,8 +31,7 @@ public class FlightSeederHelper {
         return seatRepository.findByPlaneId(plane.getId());
     }
 
-    // Creates a list of flight seats based on plane seat layout
-    protected List<FlightSeat> assignPlaneSeatsToFlight(Flight flight, List<Seat> planeSeats) {
+    protected List<FlightSeat> createFlightSeatsFromPlaneLayout(Flight flight, List<Seat> planeSeats) {
         List<FlightSeat> flightSeats = new ArrayList<>();
         Random random = new Random();
 
