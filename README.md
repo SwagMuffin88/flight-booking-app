@@ -4,7 +4,20 @@ Postgres andmebaasi ning frontend on ehitatud React raamistiku peal.
 Esimesel nädalal kulus ülesande lahendamisele ligikaudu 30-35h, teisel nädalal sain panustada terviseprobleemide
 tõttu oluliselt vähem aega, ca 25h, seega kogu töö jaoks kulunud aeg oli umbes 55h. 
 
-Viited dokumentatsioonile:
+### Kasutatud tehnoloogiad
+#### Backend:
+ - Java 21
+ - Spring Boot 3.4
+ - PostgreSQL
+ - H2 Database (testide jaoks)
+ - JUnit & Mockito
+
+#### Frontend:
+ - React
+ - Axios
+ - Material UI (MUI)
+
+### Viited dokumentatsioonile:
  - [Projekti lihtsutatud struktuur](doc/project-structure.md)
  - [API dokumentatsioon (Swagger UI)](http://localhost:8080/swagger-ui/index.html#/)
  - [OpenAPI YAML spetsifikatsioon](doc/openapi.yaml)
