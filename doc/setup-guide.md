@@ -1,5 +1,20 @@
 # Setup guide
 
+### Prerequisites
+Before setting up the project, make sure you have the following installed:
+ - **Java 17+**
+ - **PostgreSQL**
+ - **Node.js** (v16+) & npm
+
+You can check if you have these tools installed by running:
+
+```bash
+java -version
+psql --version
+node -v
+npm -v
+```
+
 ### Backend setup
 1. Go to `/src/main/resources` and locate the `application-example.yml` ([Direct link](../src/main/resources/application-example.yml)).
 2. Create a new `application.yml` under the same directory, copy the contents of `application-example.yml`.
